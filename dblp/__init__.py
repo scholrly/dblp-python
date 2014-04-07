@@ -119,7 +119,7 @@ class Publication(LazyAPIData):
             'editors':publication.xpath('editor/text()'),
             'title':first_or_none(publication.xpath('title/text()')),
             'year':int(first_or_none(publication.xpath('year/text()'))),
-            'month':first_or_none(publication.xpath('year/text()')),
+            'month':first_or_none(publication.xpath('month/text()')),
             'journal':first_or_none(publication.xpath('journal/text()')),
             'volume':first_or_none(publication.xpath('volume/text()')),
             'number':first_or_none(publication.xpath('number/text()')),
