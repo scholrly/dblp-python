@@ -18,7 +18,7 @@ class LazyAPIData(object):
             if self.data is None:
                 self.load_data()
             return self.data[key]
-        raise AttributeError, key
+        raise AttributeError(key)
 
     def load_data(self):
         pass
