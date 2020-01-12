@@ -18,7 +18,7 @@ class LazyAPIData(object):
             if self.data is None:
                 self.load_data()
             return self.data[key]
-        raise AttributeError, key
+        raise AttributeError(key)
 
     def load_data(self):
         pass
@@ -144,4 +144,14 @@ def search(author_str):
     resp = requests.get(DBLP_AUTHOR_SEARCH_URL, params={'xauthor':author_str})
     #TODO error handling
     root = etree.fromstring(resp.content)
-    return [Author(urlpt) for urlpt in root.xpath('/authors/author/@urlpt')]
+    arr_of_authors = []
+    for urlpt in root.xpath('/authors/author/@urlpt'):
+        resp1 = requests.get(DBLP_PERSON_URL.format(urlpt=urlpt))
+        xml = resp1.content
+        root1 = etree.fromstring(xml)
+        if root1.xpath('/dblpperson/homonym/text()'):
+            for hom_urlpt in root1.xpath('/dblpperson/homonym/text()'):
+                arr_of_authors.append(Author(hom_urlpt))
+        else:
+            arr_of_authors.append(Author(urlpt))
+    return arr_of_authors
