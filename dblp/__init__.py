@@ -4,6 +4,7 @@ from collections import namedtuple
 
 DBLP_BASE_URL = 'http://dblp.uni-trier.de/'
 DBLP_AUTHOR_SEARCH_URL = DBLP_BASE_URL + 'search/author'
+DBLP_PUB_SEARCH_URL = DBLP_BASE_URL + 'search/publ/api'
 
 DBLP_PERSON_URL = DBLP_BASE_URL + 'pers/xk/{urlpt}'
 DBLP_PUBLICATION_URL = DBLP_BASE_URL + 'rec/bibtex/{key}.xml'
@@ -18,7 +19,7 @@ class LazyAPIData(object):
             if self.data is None:
                 self.load_data()
             return self.data[key]
-        raise AttributeError, key
+        raise AttributeError(key)
 
     def load_data(self):
         pass
@@ -139,6 +140,16 @@ class Publication(LazyAPIData):
         }
 
         self.data = data
+
+def publ_search(publ_str):
+    # Iddo Friedberg: search using keywords in publications. Return all publicaitons with these keywords
+    publications = []
+    resp = requests.get(DBLP_PUB_SEARCH_URL, params={'q':publ_str})
+    root = etree.fromstring(resp.content)
+    for des in root.iterdescendants():
+        if des.tag == "key":
+            publications.append(Publication(des.text))
+    return publications
 
 def search(author_str):
     resp = requests.get(DBLP_AUTHOR_SEARCH_URL, params={'xauthor':author_str})
