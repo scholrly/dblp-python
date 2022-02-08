@@ -43,7 +43,9 @@ If you'd like to learn more about Michael's work, you can explore his publicatio
    >>> print michael.publications[0].journal
    PVLDB
 
+
 Keyword search ::
+
     >>> import dblp
     >>> papers = dblp.publ_search('Protein Function Prediction')
     >>> papers[0].authors
